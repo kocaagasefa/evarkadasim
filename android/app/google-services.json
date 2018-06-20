@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "566945460977",
+    "firebase_url": "https://evarkadasim-1.firebaseio.com",
+    "project_id": "evarkadasim-1",
+    "storage_bucket": "evarkadasim-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566945460977:android:1969b19e11b06580",
+        "android_client_info": {
+          "package_name": "com.evarkadasim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566945460977-9tvv3u7foqg73471eflrnh0ll9d56a4c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.evarkadasim",
+            "certificate_hash": "b7e67e407c24e3154dbd41e12a06526ec8ffdbb9"
+          }
+        },
+        {
+          "client_id": "566945460977-3f0b00r1mg1ges8h5es161mpfu2no4di.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "566945460977-3f0b00r1mg1ges8h5es161mpfu2no4di.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdHyus80wDYoQz4n5aYanxNoQe8E8HY7c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566945460977-3f0b00r1mg1ges8h5es161mpfu2no4di.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
