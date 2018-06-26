@@ -3,6 +3,7 @@ export {startLoading,finishLoading} from './ui';
 
 export {
     signInWithGoogle,
+    signInWithFacebook,
     signInWithEmailAndPassword,
     signOutAsync,
     authStateChangedListener,

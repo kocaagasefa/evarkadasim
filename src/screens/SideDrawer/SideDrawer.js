@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {View,Text,Dimensions,StyleSheet,TouchableOpacity,Image} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {signOutAsync} from '../../store/actions';
+import CircleImage from '../../components/CircleImage/CircleImage';
 
 class SideDrawer extends Component {
     logoutHandler=()=>{
@@ -12,7 +13,8 @@ class SideDrawer extends Component {
             screen:{
               screen:"evarkadasim.Auth",
               title:"Giriş Yap"
-            }
+            },
+            animationType:"fade"
           })
     }
     componentDidMount(){
@@ -22,7 +24,7 @@ class SideDrawer extends Component {
         let {displayName,photoURL} = this.props.user || {displayName:null,photoURL:null}
         return (
             <View style={[styles.container,{width:Dimensions.get("window").width*0.8}]}>
-                <Image source={{uri:photoURL}} style={styles.profilePhoto} />
+                <CircleImage source={{uri:photoURL}} radius={100}/>
                 <Text style={styles.name}>{displayName}</Text>
                 <TouchableOpacity onPress={()=>{}}>
                     <View style={[styles.menuContainer,{width:Dimensions.get("window").width*0.8}]}>
@@ -62,13 +64,6 @@ const styles=StyleSheet.create({
     logoutText:{
         marginLeft:10,
         color:"black"
-    },
-    profilePhoto:{
-        width:100,
-        height:100,
-        borderRadius:50,
-        marginBottom:30
-        
     }
 })
 const mapStateToProps = state => {

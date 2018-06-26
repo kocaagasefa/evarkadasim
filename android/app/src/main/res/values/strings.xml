@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Ev Arkadaşım</string>
+    <string name="facebook_app_id">264921500915620</string>
+    <string name="fb_login_protocol_scheme">fb264921500915620</string>
 </resources>

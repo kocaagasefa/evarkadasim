@@ -5,6 +5,8 @@ const startTabs= ()=>{
     Promise.all([
         Icon.getImageSource("md-home",30),
         Icon.getImageSource("md-people",30),
+        Icon.getImageSource("md-chatboxes",30),
+        Icon.getImageSource("md-person",30),
         Icon.getImageSource("md-menu",30),
         Icon.getImageSource("md-add",30)
     ]).then(sources=>{
@@ -18,14 +20,14 @@ const startTabs= ()=>{
                     navigatorButtons:{
                         leftButtons:[
                             {
-                                icon:sources[2],
+                                icon:sources[4],
                                 title:"Menu",
                                 id:"sideDrawerToggle"
                             }
                         ],
                         rightButtons:[
                             {
-                                icon:sources[3],
+                                icon:sources[5],
                                 id:"newHouse",
                                 title:"new"
                             }
@@ -40,19 +42,54 @@ const startTabs= ()=>{
                     navigatorButtons:{
                         leftButtons:[
                             {
-                                icon:sources[2],
+                                icon:sources[4],
                                 title:"Menu",
                                 id:"sideDrawerToggle"
                             }
                         ]
                     }
                 },
+                {
+                    screen:"evarkadasim.Messages",
+                    label:"Mesajlar",
+                    title:"Mesajlar",
+                    icon:sources[2],
+                    navigatorButtons:{
+                        leftButtons:[
+                            {
+                                icon:sources[4],
+                                title:"Menu",
+                                id:"sideDrawerToggle"
+                            }
+                        ]
+                    }
+
+                },
+                {
+                    screen:"evarkadasim.Profile",
+                    label:"Profilim",
+                    title:"Profilim",
+                    icon:sources[3],
+                    navigatorButtons:{
+                        leftButtons:[
+                            {
+                                icon:sources[4],
+                                title:"Menu",
+                                id:"sideDrawerToggle"
+                            }
+                        ]
+                    }
+                }
             ],
             tabsStyle:{
-                tabBarSelectedButtonColor:"orange"
+                tabBarSelectedButtonColor:"orange",
+                forceTitlesDisplay:true
+                
             },
             appStyle:{
-                tabBarSelectedButtonColor:"orange"
+                tabBarSelectedButtonColor:"orange",
+                forceTitlesDisplay:true
+                
             },
             drawer:{
                 left:{

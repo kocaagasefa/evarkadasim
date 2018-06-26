@@ -30,6 +30,8 @@ class Houses extends Component {
             }
         }
     }
+
+    
     componentDidMount(){
         this.props.getHouses();
     }
