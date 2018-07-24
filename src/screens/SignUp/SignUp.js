@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
 import {
     View,
-    Text,
-    Button,
     StyleSheet,
-    Image,
-    TouchableOpacity,
-    ScrollView
+    ScrollView,
+    KeyboardAvoidingView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -16,20 +13,35 @@ import CircleImage from '../../components/CircleImage/CircleImage';
 import {connect} from 'react-redux';
 import {signUp} from '../../store/actions/'
 
+import {formDataUpdate} from '../../utils/utils';
+import CustomButton from '../../components/UI/CustomButton/CustomButton';
+
 class SignUp extends Component {
     state={
         formElements:{
             name:{
                 isValid:false,
-                value:""
+                value:"",
+                touched:false,
+                validityRules:{
+                    minLength:2
+                }
             },
             surname:{
                 isValid:false,
-                value:""
+                value:"",
+                touched:false,
+                validityRules:{
+                    minLength:2
+                }
             },
             email:{
                 isValid:false,
-                value:""
+                value:"",
+                touched:false,
+                validityRules:{
+                    isEmail:true
+                }
             },
             profilePhoto:{
                 isValid:false,
@@ -37,11 +49,26 @@ class SignUp extends Component {
             },
             birthday:{
                 isValid:false,
-                value:null
+                value:null,
+                validityRules:{
+                    isDate:true
+                }
             },
             password:{
                 isValid:false,
-                value:""
+                value:"",
+                touched:false,
+                validityRules:{
+                    minLength:6
+                }
+            },
+            confirmPassword:{
+                isValid:false,
+                value:"",
+                touched:false,
+                validityRules:{
+                    equalTo:""
+                }
             }
         }
     }
@@ -69,13 +96,7 @@ class SignUp extends Component {
         this.setState(prevState=>{
             return {
                 ...prevState,
-                formElements:{
-                    ...prevState.formElements,
-                    [key]:{
-                        ...prevState.formElements[key],
-                        value
-                    }
-                }
+                formElements:formDataUpdate(prevState.formElements,value,key)
             }
         })
     }
@@ -118,29 +139,66 @@ class SignUp extends Component {
     render(){
         
         return (
-            <View style={styles.container}>  
+            <View style={{flex:1}} >
+            <KeyboardAvoidingView enabled >
+            <ScrollView 
+                contentContainerStyle={styles.container}
+                keyboardShouldPersistTaps="handled"
+                >  
+
                 <View style={styles.formContainer}>  
                     <CircleImage radius={200} source={this.state.formElements.profilePhoto.value} addIcon={this.imagePickerHandler} />
                     <View style={styles.inputsContainer}>
                     <CustomInput 
                         placeholder="İsim" 
                         value={this.state.formElements.name.value}
+                        invalid={!this.state.formElements.name.isValid}
+                        touched={this.state.formElements.name.touched}
                         onChangeText={value=>this.onChangeTextHandler(value,"name")}/>
                     <CustomInput 
                         placeholder="Soyisim" 
                         value={this.state.formElements.surname.value}
+                        invalid={!this.state.formElements.surname.isValid}
+                        touched={this.state.formElements.surname.touched}
                         onChangeText={value=>this.onChangeTextHandler(value,"surname")}/>
                     <CustomInput 
                         placeholder="Email" 
                         value={this.state.formElements.email.value}
+                        invalid={!this.state.formElements.email.isValid}
+                        touched={this.state.formElements.email.touched}
                         onChangeText={value=>this.onChangeTextHandler(value,"email")}/>
                     <CustomInput 
                         placeholder="Parola" 
                         value={this.state.formElements.password.value}
+                        invalid={!this.state.formElements.password.isValid}
+                        touched={this.state.formElements.password.touched}
                         onChangeText={value=>this.onChangeTextHandler(value,"password")}/>
-                    <Button onPress={this.onSignUpHandler} title="Kayıt Ol!" />
+                    <CustomInput 
+                        placeholder="Parola tekrarı" 
+                        value={this.state.formElements.confirmPassword.value}
+                        invalid={!this.state.formElements.confirmPassword.isValid}
+                        touched={this.state.formElements.confirmPassword.touched}
+                        onChangeText={value=>this.onChangeTextHandler(value,"confirmPassword")}/>
+                    <CustomInput 
+                        placeholder="Parola tekrarı" 
+                        value={this.state.formElements.confirmPassword.value}
+                        invalid={!this.state.formElements.confirmPassword.isValid}
+                        touched={this.state.formElements.confirmPassword.touched}
+                        onChangeText={value=>this.onChangeTextHandler(value,"confirmPassword")}/>
+                    <CustomInput 
+                        placeholder="Parola tekrarı" 
+                        value={this.state.formElements.confirmPassword.value}
+                        invalid={!this.state.formElements.confirmPassword.isValid}
+                        touched={this.state.formElements.confirmPassword.touched}
+                        onChangeText={value=>this.onChangeTextHandler(value,"confirmPassword")}/>
+                    <CustomButton 
+                        background="#444"
+                        onPress={this.onSignUpHandler} 
+                        title="Kayıt Ol!" />
                     </View>
                 </View>
+            </ScrollView>
+            </KeyboardAvoidingView>
             </View>
         );
     }
@@ -148,14 +206,15 @@ class SignUp extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex:1,
-        alignItems:"center"
+        alignItems:"center",
+        backgroundColor:"#a8dde0"
     },
     formContainer:{
         flex:1,
         width:"80%",
         alignItems:"center",           
-        justifyContent:"center"
+        justifyContent:"center",
+        paddingBottom:30
     },
     inputsContainer:{
         width:"100%"

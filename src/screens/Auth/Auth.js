@@ -41,6 +41,7 @@ class Auth extends Component {
     componentWillUnmount(){
        // this.authStateChanged();
     }
+
     onTextChangedHandler = (text,key) => {
         this.setState(prevState=>{
             return {
@@ -71,7 +72,8 @@ class Auth extends Component {
     render () {
 
         if(this.props.isLoading)
-        return <ActivityIndicator size="large"/>  
+        return <ActivityIndicator size="large"/> 
+         
         return (
 
             <View style={styles.container}>

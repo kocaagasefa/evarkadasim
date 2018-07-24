@@ -9,6 +9,7 @@ import ProfileScreen from './src/screens/Profile/Profile';
 import ShareHouseScreen from './src/screens/ShareHouse/ShareHouse';
 import HouseDetailScreen from './src/screens/HouseDetail/HouseDetail';
 import SideDrawer from './src/screens/SideDrawer/SideDrawer';
+import LightBox from './src/components/LightBox/LightBox';
 
 import configureStore from './src/store/configureStore';
 
@@ -22,6 +23,8 @@ Navigation.registerComponent("evarkadasim.Profile",()=>ProfileScreen,store,Provi
 Navigation.registerComponent("evarkadasim.ShareHouse",()=>ShareHouseScreen,store,Provider)
 Navigation.registerComponent("evarkadasim.HouseDetail",()=>HouseDetailScreen,store,Provider)
 Navigation.registerComponent("evarkadasim.SideDrawer",()=>SideDrawer,store,Provider)
+Navigation.registerComponent("evarkadasim.LightBox",()=>LightBox,store,Provider)
+
 
 Navigation.startSingleScreenApp({
   screen:{

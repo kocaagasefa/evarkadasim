@@ -1,8 +1,8 @@
 import React,{Component} from 'react';
 import {
     View,
-    Text,
-    FlatList
+    FlatList,
+    ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
@@ -51,6 +51,8 @@ class Houses extends Component {
     
 
     render(){
+        if (this.props.isLoading)
+        return <ActivityIndicator size="large" />
         return (
             <View>
                 <FlatList 
@@ -65,7 +67,8 @@ class Houses extends Component {
 }
 const mapStateToProps = state => {
     return {
-        houses:state.houses.houses
+        houses:state.houses.houses,
+        isLoading:state.ui.isLoading
     }
 }
 const mapDispatchToProps = dispatch => {

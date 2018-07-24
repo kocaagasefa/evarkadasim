@@ -14,11 +14,11 @@ const customInput = props =>{
             });
     }
     return (
-    <View style={styles.container}>   
+    <View style={[styles.container,props.style,props.invalid&&props.touched?styles.invalid:null]}>   
     {icon} 
     <TextInput 
         {...props} 
-        style= {[styles.input,props.style,props.invalid&&props.touched?styles.invalid:null]}
+        style= {styles.input}
         underlineColorAndroid="transparent" 
         />
     </View>
@@ -42,9 +42,8 @@ const styles=StyleSheet.create({
     },
     invalid:{
         backgroundColor:'#f9c0c0',
-        borderColor:"red",
-        borderWidth:1
-    },
+        borderColor:"red"
+        },
     iconStyle:{
         paddingRight:5,
         borderRightColor:"black",
