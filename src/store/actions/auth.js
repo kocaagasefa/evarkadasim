@@ -13,7 +13,7 @@ import {GoogleSignin} from 'react-native-google-signin';
 import {AccessToken,LoginManager} from 'react-native-fbsdk';
 
 import startTabs from '../../screens/Main/startTabs';
-
+import {Navigation} from 'react-native-navigation';
 export const auth = firebase.auth();
 export const database = firebase.database();
 
@@ -140,13 +140,76 @@ export const authStateChangedListener = () => {
             console.log("actions/ authStateChanged/ autoLogin:",user);           
 
             if(user){
-                dispatch(signIn(user));
-                dispatch(finishLoading());
-                return startTabs();
+                database.ref("/users/"+user.uid).once("value").then(snapshot=>{
+                    let userDetails=snapshot.val();
+                    if(userDetails){
+                        dispatch(signIn({
+                            ...user,
+                            userDetails
+                        }));
+                        dispatch(finishLoading());
+                        return startTabs();
+                    }
+                    dispatch(finishLoading());
+                    dispatch(signIn(user));
+                    return Navigation.startSingleScreenApp({
+                        screen:{
+                            screen:"evarkadasim.SignUp",
+                            title:"Kayıt Ol"
+                        },
+                        animationType:"slide-down"
+                    })
+                })
+                .catch(error=>{
+                    dispatch(finishLoading());
+                    return console.log("GetUserData Error",error);
+                });
             }
             dispatch(finishLoading());
             dispatch(signOut());
 
         })
     }
+}
+
+export const updateProfile=(profileData,additionalInfo,photo)=>{
+    
+    return dispatch => {
+        dispatch(startLoading());
+        let {photoURL}=profileData;
+        if(photo){
+            try {
+                profileData.photoURL= updateProfile(photo);
+            } catch (error) {
+                console.log("update photo error");
+            }            
+        }
+        return auth.currentUser.updateProfile({
+            ...profileData,
+            photoURL
+        })
+        .then(()=>{
+            return database.ref("users/"+auth.currentUser.uid)
+                .set(additionalInfo)
+            .then(()=>{
+                dispatch(finishLoading());
+                startTabs();
+                console.log("additional data saved to db");
+            })
+            .catch(error=>{
+                dispatch(finishLoading());
+                console.log("error while updating profile",error);
+            });
+
+        })
+        .catch(error=>{
+            dispatch(finishLoading());
+            console.log("error",error);
+        })
+
+    }
+}
+
+const updateProfilePhoto=(photo)=>{
+    return "";
 }

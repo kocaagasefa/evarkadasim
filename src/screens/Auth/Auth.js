@@ -18,6 +18,7 @@ import {
 
 import backgroundImage from '../../assets/login-bg-pic.jpg';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 class Auth extends Component {
     state= {
@@ -77,6 +78,7 @@ class Auth extends Component {
         return (
 
             <View style={styles.container}>
+                <FontAwesomeIcon color="white" size={180} name="home"/>
                 <View style={styles.emailPasswordContainer}>
                     <CustomInput 
                         icon={<Icon name="md-at" />}

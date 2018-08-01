@@ -9,6 +9,7 @@ export {
     authStateChangedListener,
     auth,
     signUp,
+    updateProfile,
     database} from './auth';
 
 export {shareHouse,getHouses,deleteHouse,updateHouse} from './houses';

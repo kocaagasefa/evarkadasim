@@ -33,6 +33,8 @@ const validate = (validityRules,value) => {
             case 'equalTo':
             valid = valid && equalToValidate(value,validityRules[rule]);
             break;
+            case 'min'  :
+            valid = valid && minValidate(value,validityRules[rule]);
             default:
             valid = true;
         }
@@ -41,10 +43,14 @@ const validate = (validityRules,value) => {
 }
 
 const minLengthValidate=(value,minLength)=> {
-    return value.length>=minLength
+    return value.length>=minLength;
 }
 const emailValidate= value => /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(value)
 
 const equalToValidate = (value,checkValue) => {
-    return value === checkValue
+    return value === checkValue;
+}
+
+const minValidate = (value,checkValue) => {
+    return value>= checkValue;
 }

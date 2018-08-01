@@ -9,7 +9,7 @@
 /android/gradle
 /android/keystores
 /android/app/build
-
+/src/hoc
 # misc
 .env.local
 .env.development.local

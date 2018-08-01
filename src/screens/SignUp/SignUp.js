@@ -5,29 +5,23 @@ import {
     ScrollView,
     KeyboardAvoidingView
 } from 'react-native';
+import Aux from '../../hoc/Aux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import CustomInput from '../../components/UI/CustomInput/CustomInput';
 import CircleImage from '../../components/CircleImage/CircleImage';
 
 import {connect} from 'react-redux';
-import {signUp} from '../../store/actions/'
+import {signUp, updateProfile} from '../../store/actions/'
 
 import {formDataUpdate} from '../../utils/utils';
 import CustomButton from '../../components/UI/CustomButton/CustomButton';
 
 class SignUp extends Component {
     state={
+        mode:"signup",
         formElements:{
-            name:{
-                isValid:false,
-                value:"",
-                touched:false,
-                validityRules:{
-                    minLength:2
-                }
-            },
-            surname:{
+            displayName:{
                 isValid:false,
                 value:"",
                 touched:false,
@@ -47,11 +41,11 @@ class SignUp extends Component {
                 isValid:false,
                 value:null
             },
-            birthday:{
+            age:{
                 isValid:false,
                 value:null,
                 validityRules:{
-                    isDate:true
+                    min:18
                 }
             },
             password:{
@@ -91,8 +85,44 @@ class SignUp extends Component {
                     })
                 })
         }
+        if(this.props.user){
+            this.setState({mode:"update"});
+            this.updateStateWithSignedInUser(this.props.user);
+        }
+
     }
+    updateStateWithSignedInUser(user){
+        let {displayName, email, photoURL}= user;
+
+        this.setState(prevState=>{
+            return {
+                ...prevState,
+                formElements:{
+                    ...prevState.formElements,
+                    displayName:{
+                        ...prevState.formElements.displayName,
+                        value:displayName
+                    },
+                    email:{
+                        ...prevState.formElements.email,
+                        value:email
+                    },
+                    profilePhoto:{
+                        value:{
+                            uri:photoURL
+                        },
+                        isValid:true
+                    }
+                }
+            }
+        })
+        
+    }
+
     onChangeTextHandler= (value,key) => {
+        if(key=="age"){
+            value=value.replace(/[^0-9]/g, '');
+        }
         this.setState(prevState=>{
             return {
                 ...prevState,
@@ -133,7 +163,15 @@ class SignUp extends Component {
         const formElements= this.state.formElements;
         for(let key in formElements)
         {user[key] = formElements[key].value;}
-        this.props.signUp(user);
+        let profileData= {
+            displayName:this.state.formElements.displayName.value,
+            email:this.state.formElements.email.value,
+            photoURL:this.state.formElements.profilePhoto.value.uri
+        }
+        let additionalInfo = {
+            age:this.state.formElements.age.value
+        };
+        this.props.user? this.props.update(profileData,additionalInfo):this.props.signUp(user);
     }
 
     render(){
@@ -150,23 +188,20 @@ class SignUp extends Component {
                     <CircleImage radius={200} source={this.state.formElements.profilePhoto.value} addIcon={this.imagePickerHandler} />
                     <View style={styles.inputsContainer}>
                     <CustomInput 
-                        placeholder="İsim" 
-                        value={this.state.formElements.name.value}
-                        invalid={!this.state.formElements.name.isValid}
-                        touched={this.state.formElements.name.touched}
+                        placeholder="İsim Soyisim" 
+                        value={this.state.formElements.displayName.value}
+                        invalid={!this.state.formElements.displayName.isValid}
+                        touched={this.state.formElements.displayName.touched}
                         onChangeText={value=>this.onChangeTextHandler(value,"name")}/>
-                    <CustomInput 
-                        placeholder="Soyisim" 
-                        value={this.state.formElements.surname.value}
-                        invalid={!this.state.formElements.surname.isValid}
-                        touched={this.state.formElements.surname.touched}
-                        onChangeText={value=>this.onChangeTextHandler(value,"surname")}/>
+                
                     <CustomInput 
                         placeholder="Email" 
                         value={this.state.formElements.email.value}
                         invalid={!this.state.formElements.email.isValid}
                         touched={this.state.formElements.email.touched}
                         onChangeText={value=>this.onChangeTextHandler(value,"email")}/>
+                {this.state.mode==="update"?null:               
+                <Aux>
                     <CustomInput 
                         placeholder="Parola" 
                         value={this.state.formElements.password.value}
@@ -179,18 +214,15 @@ class SignUp extends Component {
                         invalid={!this.state.formElements.confirmPassword.isValid}
                         touched={this.state.formElements.confirmPassword.touched}
                         onChangeText={value=>this.onChangeTextHandler(value,"confirmPassword")}/>
+                </Aux>}
                     <CustomInput 
-                        placeholder="Parola tekrarı" 
-                        value={this.state.formElements.confirmPassword.value}
-                        invalid={!this.state.formElements.confirmPassword.isValid}
-                        touched={this.state.formElements.confirmPassword.touched}
-                        onChangeText={value=>this.onChangeTextHandler(value,"confirmPassword")}/>
-                    <CustomInput 
-                        placeholder="Parola tekrarı" 
-                        value={this.state.formElements.confirmPassword.value}
-                        invalid={!this.state.formElements.confirmPassword.isValid}
-                        touched={this.state.formElements.confirmPassword.touched}
-                        onChangeText={value=>this.onChangeTextHandler(value,"confirmPassword")}/>
+                        placeholder="Yaş" 
+                        value={this.state.formElements.age.value}
+                        invalid={!this.state.formElements.age.isValid}
+                        touched={this.state.formElements.age.touched}
+                        keyboardType="numeric"
+                        onChangeText={value=>this.onChangeTextHandler(value,"age")}/>
+
                     <CustomButton 
                         background="#444"
                         onPress={this.onSignUpHandler} 
@@ -219,12 +251,19 @@ const styles = StyleSheet.create({
     inputsContainer:{
         width:"100%"
     }
-})
+});
+const mapStateToProps = state => {
+    return {
+        user:state.auth.user
+    }
+}
 const mapDispatchToProps= dispatch=> {
     return {
-        signUp:user=> dispatch(signUp(user))
+        signUp:user=> dispatch(signUp(user)),
+        update:(profileData,additionalInfo,photo)=> 
+                dispatch(updateProfile(profileData,additionalInfo,photo))
     }
     
 }
 
-export default connect(null,mapDispatchToProps)(SignUp);
+export default connect(mapStateToProps,mapDispatchToProps)(SignUp);
