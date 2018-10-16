@@ -80,6 +80,7 @@ class Auth extends Component {
             <View style={styles.container}>
                 <FontAwesomeIcon color="white" size={180} name="home"/>
                 <View style={styles.emailPasswordContainer}>
+
                     <CustomInput 
                         icon={<Icon name="md-at" />}
                         onChangeText={text=>this.onTextChangedHandler(text,"email")}/>

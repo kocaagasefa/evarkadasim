@@ -35,6 +35,7 @@ const validate = (validityRules,value) => {
             break;
             case 'min'  :
             valid = valid && minValidate(value,validityRules[rule]);
+            break;
             default:
             valid = true;
         }
@@ -52,5 +53,5 @@ const equalToValidate = (value,checkValue) => {
 }
 
 const minValidate = (value,checkValue) => {
-    return value>= checkValue;
+    return +value>= checkValue;
 }

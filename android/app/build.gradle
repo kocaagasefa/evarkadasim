@@ -77,7 +77,8 @@ dependencies {
     implementation "com.google.firebase:firebase-auth:15.1.0"
     implementation "com.google.firebase:firebase-database:16.0.1"
     implementation 'com.android.support:design:27.1.0'
-
+    implementation "com.google.firebase:firebase-storage:15.0.2"
+    implementation "com.google.firebase:firebase-functions:16.0.1"
     implementation(project(":react-native-google-signin")){         
         exclude group: "com.google.android.gms" // very important
     }

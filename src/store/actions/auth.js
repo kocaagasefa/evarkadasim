@@ -14,8 +14,10 @@ import {AccessToken,LoginManager} from 'react-native-fbsdk';
 
 import startTabs from '../../screens/Main/startTabs';
 import {Navigation} from 'react-native-navigation';
+import {Platform} from 'react-native';
 export const auth = firebase.auth();
 export const database = firebase.database();
+export const storage = firebase.storage();
 
 const googleSignInConfigure= {
     iosClientId:'',
@@ -44,7 +46,7 @@ export const signUp = (user) => {
 }
 export const signInWithFacebook = () => {
     return dispatch => {
-        dispatch(startLoading());
+        
          LoginManager.logInWithReadPermissions(['public_profile', 'email'])
             .then(result=>{
                 console.log("Login Manager Result",result);
@@ -62,7 +64,7 @@ export const signInWithFacebook = () => {
             })
             .then(credential =>{
                 console.log("credential from firebase",credential)
-                dispatch(finishLoading());
+               
                 return firebase.auth().signInAndRetrieveDataWithCredential(credential);
             })
             .then(user=>{
@@ -71,7 +73,7 @@ export const signInWithFacebook = () => {
             })
             .catch(error=>{
                 console.log("error facebook login", error);
-                dispatch(finishLoading());
+                
             })
     }
 
@@ -144,7 +146,7 @@ export const authStateChangedListener = () => {
                     let userDetails=snapshot.val();
                     if(userDetails){
                         dispatch(signIn({
-                            ...user,
+                            ...user._user,
                             userDetails
                         }));
                         dispatch(finishLoading());
@@ -176,18 +178,20 @@ export const updateProfile=(profileData,additionalInfo,photo)=>{
     
     return dispatch => {
         dispatch(startLoading());
-        let {photoURL}=profileData;
-        if(photo){
-            try {
-                profileData.photoURL= updateProfile(photo);
-            } catch (error) {
-                console.log("update photo error");
-            }            
-        }
-        return auth.currentUser.updateProfile({
-            ...profileData,
-            photoURL
-        })
+
+        updateProfilePhoto(photo)
+            .then(
+                snapshot=>{
+                    let updateData= {...profileData}
+                    
+                    if(snapshot&&snapshot.downloadURL){
+                        updateData.photoURL= snapshot.downloadURL;
+                    }
+                    return auth.currentUser.updateProfile({
+                        ...updateData
+                        });
+                }
+            )
         .then(()=>{
             return database.ref("users/"+auth.currentUser.uid)
                 .set(additionalInfo)
@@ -211,5 +215,17 @@ export const updateProfile=(profileData,additionalInfo,photo)=>{
 }
 
 const updateProfilePhoto=(photo)=>{
-    return "";
+    if(!photo){
+        return new Promise((resolve)=>{
+            console.log("no photo");
+            return resolve();
+        });
+    }
+    let fileName= firebase.storage.Native.CACHES_DIRECTORY_PATH +photo.substring(photo.indexOf("/react"));
+    if (Platform.OS === 'android') {
+        fileName = fileName.replace('file:/', '');
+    }
+    
+    return storage.ref().child("/profile_photos/"+auth.currentUser.uid+"/profilePhoto.jpg")
+        .putFile(fileName,{contentType:"image/jpeg"})
 }

@@ -3,7 +3,9 @@ import {
     View,
     StyleSheet,
     ScrollView,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    Picker,
+    ActivityIndicator
 } from 'react-native';
 import Aux from '../../hoc/Aux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -38,7 +40,7 @@ class SignUp extends Component {
                 }
             },
             profilePhoto:{
-                isValid:false,
+                isValid:true,
                 value:null
             },
             age:{
@@ -56,6 +58,14 @@ class SignUp extends Component {
                     minLength:6
                 }
             },
+            sex:{
+                isValid:true,
+                value:"K",
+                touched:false,
+                validityRules:{
+                    
+                }
+            },
             confirmPassword:{
                 isValid:false,
                 value:"",
@@ -70,7 +80,6 @@ class SignUp extends Component {
         if(!this.state.formElements.profilePhoto.value){
             Icon.getImageSource("md-contact",300,"white")
                 .then(image=>{
-                    console.log("Icon image",image);
                     this.setState(prevState=>{
                         return {
                             ...prevState,
@@ -95,26 +104,14 @@ class SignUp extends Component {
         let {displayName, email, photoURL}= user;
 
         this.setState(prevState=>{
+            let formElements= formDataUpdate(prevState.formElements,displayName,"displayName");
+            formElements = formDataUpdate({...formElements},email,"email");
+            formElements = formDataUpdate({...formElements},{uri:photoURL},"profilePhoto");
             return {
                 ...prevState,
-                formElements:{
-                    ...prevState.formElements,
-                    displayName:{
-                        ...prevState.formElements.displayName,
-                        value:displayName
-                    },
-                    email:{
-                        ...prevState.formElements.email,
-                        value:email
-                    },
-                    profilePhoto:{
-                        value:{
-                            uri:photoURL
-                        },
-                        isValid:true
-                    }
-                }
+                formElements
             }
+
         })
         
     }
@@ -135,14 +132,14 @@ class SignUp extends Component {
             width:300,
             height:300,
             cropping:true,
+            mediaType:"photo",
             cropperCircleOverlay:true,
             cropperToolbarTitle:"Kırp",
             includeBase64:true
         }).then(response=>{
-            console.log(response)
             const image={
                 uri:response.path,
-                base64:response.data
+                path:response.path
             }
             this.setState(prevState=>{
                 return {
@@ -156,7 +153,7 @@ class SignUp extends Component {
                     }
                 }
             })
-        })
+        }).catch(console.log)
     }
     onSignUpHandler= () => {
         const user= {}
@@ -165,20 +162,30 @@ class SignUp extends Component {
         {user[key] = formElements[key].value;}
         let profileData= {
             displayName:this.state.formElements.displayName.value,
-            email:this.state.formElements.email.value,
-            photoURL:this.state.formElements.profilePhoto.value.uri
+            email:this.state.formElements.email.value
         }
         let additionalInfo = {
-            age:this.state.formElements.age.value
+            age:this.state.formElements.age.value,
+            sex:this.state.formElements.sex.value
         };
-        this.props.user? this.props.update(profileData,additionalInfo):this.props.signUp(user);
+        let photoURL = this.state.formElements.profilePhoto.value.path;
+        console.log("photo:",photoURL);
+        this.props.user? this.props.update(profileData,additionalInfo,photoURL):this.props.signUp(user,photoURL);
     }
-
+    checkFormValidity(){
+        let update= this.state.mode=="update";
+        return this.state.formElements.displayName.isValid&&
+                this.state.formElements.email.isValid&&
+                this.state.formElements.age.isValid&&
+                (this.state.formElements.password.isValid||update)&&
+                (this.state.formElements.confirmPassword.isValid||update);
+    }
     render(){
-        
+        if(this.props.isLoading)
+        return <ActivityIndicator size="large"/>
         return (
             <View style={{flex:1}} >
-            <KeyboardAvoidingView enabled >
+            <KeyboardAvoidingView enabled behavior="padding">
             <ScrollView 
                 contentContainerStyle={styles.container}
                 keyboardShouldPersistTaps="handled"
@@ -192,7 +199,7 @@ class SignUp extends Component {
                         value={this.state.formElements.displayName.value}
                         invalid={!this.state.formElements.displayName.isValid}
                         touched={this.state.formElements.displayName.touched}
-                        onChangeText={value=>this.onChangeTextHandler(value,"name")}/>
+                        onChangeText={value=>this.onChangeTextHandler(value,"displayName")}/>
                 
                     <CustomInput 
                         placeholder="Email" 
@@ -222,9 +229,19 @@ class SignUp extends Component {
                         touched={this.state.formElements.age.touched}
                         keyboardType="numeric"
                         onChangeText={value=>this.onChangeTextHandler(value,"age")}/>
-
+                        <View style={styles.pickerContainer}>
+                        <Picker 
+                        style={styles.picker}                            
+                            selectedValue={this.state.formElements.sex.value}
+                            onValueChange={value=>this.onChangeTextHandler(value,"sex")}
+                            mode="dialog">
+                                <Picker.Item label="Kadın" value="K"/>
+                                <Picker.Item label="Erkek" value="E" />                            
+                        </Picker>
+                    </View>
                     <CustomButton 
                         background="#444"
+                        disabled= {!this.checkFormValidity()}
                         onPress={this.onSignUpHandler} 
                         title="Kayıt Ol!" />
                     </View>
@@ -239,22 +256,34 @@ class SignUp extends Component {
 const styles = StyleSheet.create({
     container: {
         alignItems:"center",
-        backgroundColor:"#a8dde0"
+        backgroundColor:"#a8dde0",
+        paddingTop:40
     },
     formContainer:{
         flex:1,
         width:"80%",
         alignItems:"center",           
         justifyContent:"center",
-        paddingBottom:30
+        paddingBottom:150        
     },
     inputsContainer:{
         width:"100%"
+    },
+    pickerContainer:{
+        borderWidth:1,
+        borderColor:"#000",
+        borderRadius:10
+    },
+    picker:{
+        margin:0,
+        padding:0,
+        height:40
     }
 });
 const mapStateToProps = state => {
     return {
-        user:state.auth.user
+        user:state.auth.user,
+        isLoading:state.ui.isLoading
     }
 }
 const mapDispatchToProps= dispatch=> {

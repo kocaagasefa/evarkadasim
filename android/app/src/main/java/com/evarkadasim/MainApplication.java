@@ -15,6 +15,8 @@ import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import io.invertase.firebase.database.RNFirebaseDatabasePackage;
+import io.invertase.firebase.storage.RNFirebaseStoragePackage;
+import io.invertase.firebase.functions.RNFirebaseFunctionsPackage; 
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -61,7 +63,9 @@ import com.reactnativenavigation.controllers.ActivityCallbacks;
              new RNGoogleSigninPackage(),
              new RNFirebaseDatabasePackage(),
              new PickerPackage(),
-             new FBSDKPackage(mCallbackManager)
+             new FBSDKPackage(mCallbackManager),
+             new RNFirebaseStoragePackage(),
+             new RNFirebaseFunctionsPackage()
          );
      }
 
